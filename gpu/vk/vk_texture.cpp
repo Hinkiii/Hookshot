@@ -4750,7 +4750,7 @@ void texture_released(const nvn_tex* t) {
 }
 
 void texture_pool_finalized(uint64_t lo, uint64_t hi) {
-    if (hi <= lo || env_on("RX_VK_KEEP_FINALIZED_POOLS")) return;
+    if (hi <= lo) return;   // (RX_VK_KEEP_FINALIZED_POOLS: never called, vk_memory.cpp retire_finalized_pools)
     for (auto it = gpu_owned.lower_bound(lo); it != gpu_owned.end() && it->first < hi;)
         it = it->second.first <= hi ? gpu_owned.erase(it) : std::next(it);
     const uint32_t gen = memory_generation();
